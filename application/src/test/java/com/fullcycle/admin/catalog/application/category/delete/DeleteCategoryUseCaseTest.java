@@ -26,7 +26,7 @@ public class DeleteCategoryUseCaseTest {
     }
 
     @Test
-    private void givenAValidId_whenCallsDeleteCategory_shouldBeOk() {
+    public void givenAValidId_whenCallsDeleteCategory_shouldBeOk() {
         final var aCategory = Category.newCategory("Filmes", "A categoria", true);
         final var expectedId = aCategory.getId();
         Mockito.doNothing().when(categoryGateway).deleteById(Mockito.eq(expectedId));
