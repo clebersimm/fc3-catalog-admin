@@ -112,7 +112,7 @@ public class CategoryTest {
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
         Assertions.assertNotNull(actualCategory.getCreatedAt());
         Assertions.assertNotNull(actualCategory.getUpdatedAt());
-        Assertions.assertNull(actualCategory.getDeletedAt());
+        Assertions.assertNotNull(actualCategory.getDeletedAt());
     }
 
     @Test
