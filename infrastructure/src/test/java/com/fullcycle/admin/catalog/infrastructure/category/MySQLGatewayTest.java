@@ -2,6 +2,8 @@ package com.fullcycle.admin.catalog.infrastructure.category;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
@@ -17,10 +19,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @Target(ElementType.TYPE)
 @ActiveProfiles("test")
+@Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @DataJpaTest
-@ComponentScan(includeFilters = {
-    @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*[MysqlGateway]")
+@ComponentScan(
+    basePackages = "com.fullcycle.admin.catalog",
+    useDefaultFilters = false,
+    includeFilters = {
+    @ComponentScan.Filter(
+        type = FilterType.REGEX, 
+        pattern = ".*MysqlGateway")
 })
 @ExtendWith(MySQLGatewayTest.CleanupExtensions.class)
 public @interface MySQLGatewayTest {

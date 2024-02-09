@@ -13,10 +13,12 @@ import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "category")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryJpaEntity {
