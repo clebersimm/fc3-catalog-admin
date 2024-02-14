@@ -9,5 +9,5 @@ import com.fullcycle.admin.catalog.infrastructure.configuration.WebServerConfig;
 public class Main {
     public static void main(String[] args) {
         SpringApplication.run(WebServerConfig.class,args);
-    }
+    }   
 }
