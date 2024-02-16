@@ -30,16 +30,25 @@ public class GetCategoryByIdUseCaseTest {
 
     @Test
     public void givenAValidId_whenCallsGetCategory_shouldReturnACategory() {
-        final var aCategory = Category.newCategory("Filmes", "A categoria", true);
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A Categoria";
+        final var expectedIsActive = true;
+        final var aCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
         final var expectedId = aCategory.getId();
         Mockito.when(categoryGateway.findById(Mockito.eq(expectedId))).thenReturn(Optional.of(aCategory.clone()));
         final var actualCategory = useCase.execute(expectedId.getValue());
         Assertions.assertEquals(CategoryOutput.from(aCategory), actualCategory);
-        // TODO pode ser colocado para comparar todos os valores
+        Assertions.assertEquals(expectedId, actualCategory.id());
+        Assertions.assertEquals(expectedName, actualCategory.name());
+        Assertions.assertEquals(expectedDescription, actualCategory.description());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(aCategory.getCreatedAt(), actualCategory.createdAt());
+        Assertions.assertEquals(aCategory.getUpdatedAt(), actualCategory.updateddAt());
+        Assertions.assertEquals(aCategory.getDeletedAt(), actualCategory.deleteddAt());
     }
 
     @Test
-    public void givenAInvalidId_whenCallGetCategory_shouldRetunNotFound() {
+    public void givenAnInvalidId_whenCallGetCategory_shouldRetunNotFound() {
         final var expectedErrorMessage = "Category with ID 1234 was not found";
         final var expectedId = CategoryID.from("1234");
         Mockito.when(categoryGateway.findById(Mockito.eq(expectedId))).thenReturn(Optional.empty());

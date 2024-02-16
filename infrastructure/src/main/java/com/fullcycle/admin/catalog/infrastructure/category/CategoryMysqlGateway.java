@@ -2,16 +2,10 @@ package com.fullcycle.admin.catalog.infrastructure.category;
 
 import java.util.Optional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.JpaSort.Path;
 import org.springframework.stereotype.Component;
 
 import com.fullcycle.admin.catalog.domain.category.Category;
