@@ -7,24 +7,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 
 @Target(ElementType.TYPE)
 @ActiveProfiles("test")
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@DataJpaTest
-@ComponentScan(
-    basePackages = "com.fullcycle.admin.catalog",
-    useDefaultFilters = false,
-    includeFilters = {
-    @ComponentScan.Filter(
-        type = FilterType.REGEX, 
-        pattern = ".[MysqlGateway]")
+@WebMvcTest
+@ComponentScan(basePackages = "com.fullcycle.admin.catalog", useDefaultFilters = false, includeFilters = {
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".[MysqlGateway]")
 })
 @ExtendWith(CleanUpExtension.class)
-public @interface MySQLGatewayTest {    
+public @interface ControllerTest {
+    @AliasFor(annotation = WebMvcTest.class, attribute = "controllers")
+    Class<?>[] controllers() default {};
 }
