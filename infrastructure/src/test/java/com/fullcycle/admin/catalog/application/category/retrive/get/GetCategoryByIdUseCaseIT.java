@@ -15,6 +15,7 @@ import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
+import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 
@@ -53,7 +54,7 @@ public class GetCategoryByIdUseCaseIT {
     public void givenAnInvalidId_whenCallGetCategory_shouldRetunNotFound() {
         final var expectedErrorMessage = "Category with ID 1234 was not found";
         final var expectedId = CategoryID.from("1234");
-        final var actualException = Assertions.assertThrows(DomainException.class,
+        final var actualException = Assertions.assertThrows(NotFoundException.class,
                 () -> useCase.execute(expectedId.getValue()));
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
     }

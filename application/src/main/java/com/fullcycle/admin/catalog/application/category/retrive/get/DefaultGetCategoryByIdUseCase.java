@@ -3,10 +3,10 @@ package com.fullcycle.admin.catalog.application.category.retrive.get;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
-import com.fullcycle.admin.catalog.domain.validation.Error;
+import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 
 public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
 
@@ -21,12 +21,12 @@ public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
     public CategoryOutput execute(String aIn) {
         final var aCategoryID = CategoryID.from(aIn);
         return this.categoryGateway.findById(aCategoryID)
-        .map(CategoryOutput::from) 
-        .orElseThrow(notFound(aCategoryID));
+                .map(CategoryOutput::from)
+                .orElseThrow(notFound(aCategoryID));
     }
 
-    private Supplier<DomainException> notFound(final CategoryID anId) {
-        return () -> DomainException.with(new Error("Category with ID %s was not found".formatted(anId.getValue())));
+    private Supplier<NotFoundException> notFound(final CategoryID anId) {
+        return () -> NotFoundException.with(Category.class, anId);
     }
 
 }

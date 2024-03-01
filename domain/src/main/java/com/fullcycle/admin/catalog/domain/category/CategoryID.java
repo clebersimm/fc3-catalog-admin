@@ -20,6 +20,7 @@ public class CategoryID extends Identifier {
     public static CategoryID from(final UUID anId){
         return new CategoryID(anId.toString().toLowerCase());
     }
+    @Override
     public String getValue() {
         return value;
     }

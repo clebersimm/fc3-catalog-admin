@@ -30,6 +30,7 @@ import com.fullcycle.admin.catalog.application.category.retrive.get.GetCategoryB
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
+import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
@@ -149,7 +150,8 @@ public class CategoryAPITest {
                 final var expectedId = aCategory.getId();
                 when(getCategoryByIdUseCase.execute(any())).thenReturn(CategoryOutput.from(aCategory));
                 // when
-                final var request = MockMvcRequestBuilders.get("/categories/{id}", expectedId.getValue()).contentType(MediaType.APPLICATION_JSON);
+                final var request = MockMvcRequestBuilders.get("/categories/{id}", expectedId.getValue())
+                                .contentType(MediaType.APPLICATION_JSON);
                 final var response = this.mvc.perform(request)
                                 .andDo(MockMvcResultHandlers.print());
                 // then
@@ -176,10 +178,10 @@ public class CategoryAPITest {
                 final var expectedErrorMessage = "Category with ID 1234 was not found";
                 final var expectedId = CategoryID.from("1234");
                 Mockito.when(getCategoryByIdUseCase.execute(any()))
-                                .thenThrow(DomainException.with(
-                                                new Error("Category with ID %s was not found".formatted(expectedId))));
+                                .thenThrow(NotFoundException.with(Category.class, expectedId));
                 // when
-                final var request = MockMvcRequestBuilders.get("/categories/{id}", expectedId.getValue()).contentType(MediaType.APPLICATION_JSON);
+                final var request = MockMvcRequestBuilders.get("/categories/{id}", expectedId.getValue())
+                                .contentType(MediaType.APPLICATION_JSON);
 
                 final var response = this.mvc.perform(request)
                                 .andDo(MockMvcResultHandlers.print());
