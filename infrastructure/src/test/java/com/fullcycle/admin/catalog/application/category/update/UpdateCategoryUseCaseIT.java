@@ -14,12 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
+import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 
@@ -33,7 +35,7 @@ public class UpdateCategoryUseCaseIT {
     @SpyBean
     private CategoryGateway categoryGateway;
 
-     private void save(final Category... aCategory){
+    private void save(final Category... aCategory) {
         categoryRepository.saveAllAndFlush(Arrays.stream(aCategory).map(CategoryJpaEntity::from).toList());
     }
 
@@ -58,7 +60,7 @@ public class UpdateCategoryUseCaseIT {
         Assertions.assertEquals(expectedName, actualCategory.getName());
         Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
-        Assertions.assertEquals(aCategory.getCreatedAt(),actualCategory.getCreatedAt());
+        Assertions.assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
         Assertions.assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
         Assertions.assertNull(actualCategory.getDeletedAt());
     }
@@ -105,7 +107,7 @@ public class UpdateCategoryUseCaseIT {
         Assertions.assertEquals(expectedName, actualCategory.getName());
         Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
-        Assertions.assertEquals(aCategory.getCreatedAt(),actualCategory.getCreatedAt());
+        Assertions.assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
         Assertions.assertTrue(aCategory.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
         Assertions.assertNotNull(actualCategory.getDeletedAt());
     }
@@ -142,14 +144,12 @@ public class UpdateCategoryUseCaseIT {
         Assertions.assertNull(aCategory.getDeletedAt());
         final var expectedId = "126384684";
         final var expectedErrorMessage = "Category with ID 126384684 was not found";
-        final var expectedErrorCount = 1;
         final var aCommand = UpdateCategoryCommand.with(
                 expectedId,
                 expectedName,
                 expectedDescription,
                 expectedIsActive);
-        final var actualException = Assertions.assertThrows(DomainException.class, ()->useCase.execute(aCommand));
-        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
-        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        final var actualException = Assertions.assertThrows(NotFoundException.class, () -> useCase.execute(aCommand));
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
     }
 }

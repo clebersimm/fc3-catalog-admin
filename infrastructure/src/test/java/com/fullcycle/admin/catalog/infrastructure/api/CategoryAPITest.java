@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.Objects;
 
 import org.hamcrest.Matchers;
+import org.hibernate.annotations.NotFoundAction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,6 +28,8 @@ import com.fullcycle.admin.catalog.application.category.create.CreateCategoryUse
 import com.fullcycle.admin.catalog.application.category.retrive.get.CategoryOutput;
 import com.fullcycle.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCase;
 import com.fullcycle.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCaseIT;
+import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryOutput;
+import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryUseCase;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
@@ -34,8 +37,10 @@ import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
+import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 
 import io.vavr.API;
+import io.vavr.control.Either.Left;
 
 @ControllerTest(controllers = CategoryApi.class)
 public class CategoryAPITest {
@@ -50,6 +55,8 @@ public class CategoryAPITest {
 
         @MockBean
         private GetCategoryByIdUseCase getCategoryByIdUseCase;
+        @MockBean
+        private UpdateCategoryUseCase updateCategoryUseCase;
 
         @Test
         public void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() throws Exception {
@@ -188,6 +195,102 @@ public class CategoryAPITest {
                 // then
                 response.andExpect(MockMvcResultMatchers.status().isNotFound())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.message",
+                                                Matchers.equalTo(expectedErrorMessage)));
+        }
+
+        @Test
+        public void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() throws Exception {
+                // given
+                final var expectedId = "123";
+                final var expectedName = "Filmes";
+                final var expectedDescription = "Categoria mais assistida";
+                final var expectedIsActive = true;
+                when(updateCategoryUseCase.execute(any())).thenReturn(API.Right(UpdateCategoryOutput.from(expectedId)));
+                final var aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+                // when
+                Mockito.when(cretCreateCategoryUseCase.execute(any()))
+                                .thenReturn(API.Right(CreateCategoryOutput.from("123")));
+                final var request = MockMvcRequestBuilders.put("/categories/{id}", expectedId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.mapper.writeValueAsString(aCommand));
+
+                final var response = this.mvc.perform(request)
+                                .andDo(MockMvcResultHandlers.print());
+                // then
+                response.andExpectAll(
+                                MockMvcResultMatchers.status().isOk(),
+                                MockMvcResultMatchers.header().string("Content-Type",
+                                                MediaType.APPLICATION_JSON_VALUE))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.equalTo(expectedId)));
+                verify(updateCategoryUseCase, times(1)).execute(argThat(cmd -> Objects.equals(expectedName, cmd.name())
+                                && Objects.equals(expectedDescription, cmd.description())
+                                && Objects.equals(expectedIsActive, cmd.isActive())));
+        }
+
+        @Test
+        public void givenACommandoWithAnInvaliId_whenCallsUpdateCategory_shouldReturnDomainException()
+                        throws Exception {
+                // given
+                final var expectedId = "not-found";
+                final var expectedName = "Filmes";
+                final var expectedDescription = "Categoria mais assistida";
+                final var expectedIsActive = true;
+
+                final var expectedErrorMessage = "Category with ID not-found was not found";
+
+                when(updateCategoryUseCase.execute(any()))
+                                .thenThrow(NotFoundException.with(Category.class, CategoryID.from(expectedId)));
+                final var aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+                // when
+                Mockito.when(cretCreateCategoryUseCase.execute(any()))
+                                .thenReturn(API.Right(CreateCategoryOutput.from("123")));
+                final var request = MockMvcRequestBuilders.put("/categories/{id}", expectedId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.mapper.writeValueAsString(aCommand));
+
+                final var response = this.mvc.perform(request)
+                                .andDo(MockMvcResultHandlers.print());
+                // then
+                response.andExpectAll(
+                                MockMvcResultMatchers.status().isNotFound(),
+                                MockMvcResultMatchers.header().string("Content-Type",
+                                                MediaType.APPLICATION_JSON_VALUE))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.message",
+                                                Matchers.equalTo(expectedErrorMessage)));
+                verify(updateCategoryUseCase, times(1)).execute(argThat(cmd -> Objects.equals(expectedName, cmd.name())
+                                && Objects.equals(expectedDescription, cmd.description())
+                                && Objects.equals(expectedIsActive, cmd.isActive())));
+        }
+
+        @Test
+        public void givenACommandWithInvalidId_whenCallsUpdateCategory_shouldReturnNotFoundException()
+                        throws Exception {
+                // given
+                final var expectedId = "123";
+                final var expectedName = "Filmes";
+                final var expectedDescription = "Categoria mais assistida";
+                final var expectedIsActive = true;
+                final var expectedErrorMessage = "'name' should not be null";
+
+                when(updateCategoryUseCase.execute(any()))
+                                .thenReturn(API.Left(Notification.create(new Error(expectedErrorMessage))));
+                final var aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+                // when
+                Mockito.when(cretCreateCategoryUseCase.execute(any()))
+                                .thenReturn(API.Right(CreateCategoryOutput.from("123")));
+                final var request = MockMvcRequestBuilders.put("/categories/{id}", expectedId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(this.mapper.writeValueAsString(aCommand));
+
+                final var response = this.mvc.perform(request)
+                                .andDo(MockMvcResultHandlers.print());
+                // then
+                response.andExpectAll(
+                                MockMvcResultMatchers.status().isUnprocessableEntity(),
+                                MockMvcResultMatchers.header().string("Content-Type",
+                                                MediaType.APPLICATION_JSON_VALUE))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.errors", Matchers.hasSize(1)))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].message",
                                                 Matchers.equalTo(expectedErrorMessage)));
         }
 
