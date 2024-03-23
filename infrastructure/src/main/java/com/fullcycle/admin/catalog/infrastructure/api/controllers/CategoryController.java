@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fullcycle.admin.catalog.application.category.create.CreateCategoryCommand;
 import com.fullcycle.admin.catalog.application.category.create.CreateCategoryOutput;
 import com.fullcycle.admin.catalog.application.category.create.CreateCategoryUseCase;
+import com.fullcycle.admin.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.fullcycle.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCase;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryCommand;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryOutput;
@@ -28,13 +29,16 @@ public class CategoryController implements CategoryApi {
     private final CreateCategoryUseCase createCategoryUseCase;
     private final GetCategoryByIdUseCase getCategoryByIdUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
+    private final DeleteCategoryUseCase deleteCategoryUseCase;
 
     public CategoryController(final CreateCategoryUseCase createCategoryUseCase,
             final GetCategoryByIdUseCase getCategoryByIdUseCase,
-            final UpdateCategoryUseCase updateCategoryUseCase) {
+            final UpdateCategoryUseCase updateCategoryUseCase,
+            final DeleteCategoryUseCase deleteCategoryUseCase) {
         this.createCategoryUseCase = Objects.requireNonNull(createCategoryUseCase);
         this.getCategoryByIdUseCase = Objects.requireNonNull(getCategoryByIdUseCase);
         this.updateCategoryUseCase = Objects.requireNonNull(updateCategoryUseCase);
+        this.deleteCategoryUseCase = Objects.requireNonNull(deleteCategoryUseCase);
     }
 
     @Override
@@ -74,5 +78,10 @@ public class CategoryController implements CategoryApi {
                 .body(notification);
         final Function<UpdateCategoryOutput, ResponseEntity<?>> onSuccess = ResponseEntity::ok;
         return this.updateCategoryUseCase.execute(aCommand).fold(onError, onSuccess);
+    }
+
+    @Override
+    public void deleteById(String anId) {
+        this.deleteCategoryUseCase.execute(anId);
     }
 }

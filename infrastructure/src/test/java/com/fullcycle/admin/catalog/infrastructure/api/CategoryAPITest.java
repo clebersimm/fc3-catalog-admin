@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog.infrastructure.api;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,8 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.Objects;
 
 import org.hamcrest.Matchers;
-import org.hibernate.annotations.NotFoundAction;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fullcycle.admin.catalog.ControllerTest;
 import com.fullcycle.admin.catalog.application.category.create.CreateCategoryOutput;
 import com.fullcycle.admin.catalog.application.category.create.CreateCategoryUseCase;
+import com.fullcycle.admin.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.fullcycle.admin.catalog.application.category.retrive.get.CategoryOutput;
 import com.fullcycle.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCase;
-import com.fullcycle.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCaseIT;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryOutput;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryUseCase;
 import com.fullcycle.admin.catalog.domain.category.Category;
@@ -40,7 +39,6 @@ import com.fullcycle.admin.catalog.infrastructure.category.models.CreateCategory
 import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 
 import io.vavr.API;
-import io.vavr.control.Either.Left;
 
 @ControllerTest(controllers = CategoryApi.class)
 public class CategoryAPITest {
@@ -57,6 +55,8 @@ public class CategoryAPITest {
         private GetCategoryByIdUseCase getCategoryByIdUseCase;
         @MockBean
         private UpdateCategoryUseCase updateCategoryUseCase;
+        @MockBean
+        private DeleteCategoryUseCase deleteCategoryUseCase;
 
         @Test
         public void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() throws Exception {
@@ -292,6 +292,22 @@ public class CategoryAPITest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors", Matchers.hasSize(1)))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[0].message",
                                                 Matchers.equalTo(expectedErrorMessage)));
+        }
+
+        @Test
+        public void givenAValidId_whenCallsDeleteCategory_shouldBeOk() throws Exception {
+                // given
+                final var expectedId = "123";
+                doNothing().when(deleteCategoryUseCase).execute(any());
+                // when
+                final var request = MockMvcRequestBuilders.delete("/categories/{id}", expectedId)
+                                .contentType(MediaType.APPLICATION_JSON);
+                final var response = this.mvc.perform(request)
+                                .andDo(MockMvcResultHandlers.print());
+                // then
+                response.andExpect(MockMvcResultMatchers.status().isNoContent());
+
+                verify(deleteCategoryUseCase, times(1)).execute(Mockito.eq(expectedId));
         }
 
 }
