@@ -10,8 +10,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
+
+import com.fullcycle.admin.catalog.infrastructure.configuration.ObjectMapperConfig;
 
 @Target(ElementType.TYPE)
 @ActiveProfiles("test")
@@ -22,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
         @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".[MysqlGateway]")
 })
 @ExtendWith(CleanUpExtension.class)
+@Import(ObjectMapperConfig.class)
 public @interface ControllerTest {
     @AliasFor(annotation = WebMvcTest.class, attribute = "controllers")
     Class<?>[] controllers() default {};

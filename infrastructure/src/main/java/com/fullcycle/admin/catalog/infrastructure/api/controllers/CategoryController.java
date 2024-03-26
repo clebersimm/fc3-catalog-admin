@@ -12,9 +12,11 @@ import com.fullcycle.admin.catalog.application.category.create.CreateCategoryOut
 import com.fullcycle.admin.catalog.application.category.create.CreateCategoryUseCase;
 import com.fullcycle.admin.catalog.application.category.delete.DeleteCategoryUseCase;
 import com.fullcycle.admin.catalog.application.category.retrive.get.GetCategoryByIdUseCase;
+import com.fullcycle.admin.catalog.application.category.retrive.list.ListCategoriesUseCase;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryCommand;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryOutput;
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryUseCase;
+import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infrastructure.api.CategoryApi;
@@ -30,15 +32,18 @@ public class CategoryController implements CategoryApi {
     private final GetCategoryByIdUseCase getCategoryByIdUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
     private final DeleteCategoryUseCase deleteCategoryUseCase;
+    private final ListCategoriesUseCase listCategoriesUseCase;
 
     public CategoryController(final CreateCategoryUseCase createCategoryUseCase,
             final GetCategoryByIdUseCase getCategoryByIdUseCase,
             final UpdateCategoryUseCase updateCategoryUseCase,
-            final DeleteCategoryUseCase deleteCategoryUseCase) {
+            final DeleteCategoryUseCase deleteCategoryUseCase,
+            final ListCategoriesUseCase listCategoriesUseCase) {
         this.createCategoryUseCase = Objects.requireNonNull(createCategoryUseCase);
         this.getCategoryByIdUseCase = Objects.requireNonNull(getCategoryByIdUseCase);
         this.updateCategoryUseCase = Objects.requireNonNull(updateCategoryUseCase);
         this.deleteCategoryUseCase = Objects.requireNonNull(deleteCategoryUseCase);
+        this.listCategoriesUseCase = Objects.requireNonNull(listCategoriesUseCase);
     }
 
     @Override
@@ -54,8 +59,7 @@ public class CategoryController implements CategoryApi {
 
     @Override
     public Pagination<?> listCategories(String search, int page, int perPage, String sort, String direction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listCategories'");
+        return listCategoriesUseCase.execute(new CategorySearchQuery(page, perPage, search, sort, direction));
     }
 
     @Override
