@@ -21,6 +21,7 @@ import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infrastructure.api.CategoryApi;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CategoryApiOutput;
+import com.fullcycle.admin.catalog.infrastructure.category.models.CategoryListResponse;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fullcycle.admin.catalog.infrastructure.category.presenters.CategoryApiPresenter;
@@ -58,8 +59,10 @@ public class CategoryController implements CategoryApi {
     }
 
     @Override
-    public Pagination<?> listCategories(String search, int page, int perPage, String sort, String direction) {
-        return listCategoriesUseCase.execute(new CategorySearchQuery(page, perPage, search, sort, direction));
+    public Pagination<CategoryListResponse> listCategories(String search, int page, int perPage, String sort,
+            String direction) {
+        return listCategoriesUseCase.execute(new CategorySearchQuery(page, perPage, search, sort, direction))
+                .map(CategoryApiPresenter::present);
     }
 
     @Override

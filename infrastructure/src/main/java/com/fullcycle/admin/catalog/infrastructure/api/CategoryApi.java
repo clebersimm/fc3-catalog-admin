@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CategoryApiOutput;
+import com.fullcycle.admin.catalog.infrastructure.category.models.CategoryListResponse;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 
@@ -42,7 +43,7 @@ public interface CategoryApi {
             @ApiResponse(responseCode = "422", description = "An invalid parameter was received"),
             @ApiResponse(responseCode = "500", description = "An internal server error thrown")
     })
-    Pagination<?> listCategories(
+    Pagination<CategoryListResponse> listCategories(
             @RequestParam(name = "search", required = false, defaultValue = "") final String search,
             @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
             @RequestParam(name = "perPage", required = false, defaultValue = "name") final int perPage,
