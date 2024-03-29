@@ -13,11 +13,11 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fullcycle.admin.catalog.infrastructure.configuration.WebServerConfig;
 
 @Target(ElementType.TYPE)
-@ActiveProfiles("test-integration")
+@ActiveProfiles("test-e2e")
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @SpringBootTest(classes = WebServerConfig.class)
 @ExtendWith(CleanUpExtension.class)
-public @interface IntegrationTest {
+public @interface E2ETest {
     
 }

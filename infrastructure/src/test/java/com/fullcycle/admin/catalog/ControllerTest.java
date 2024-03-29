@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fullcycle.admin.catalog.infrastructure.configuration.ObjectMapperConfig;
 
 @Target(ElementType.TYPE)
-@ActiveProfiles("test")
+@ActiveProfiles("test-integration")
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @WebMvcTest

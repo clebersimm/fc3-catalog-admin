@@ -13,7 +13,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
 
 @Target(ElementType.TYPE)
-@ActiveProfiles("test")
+@ActiveProfiles("test-integration")
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @DataJpaTest
