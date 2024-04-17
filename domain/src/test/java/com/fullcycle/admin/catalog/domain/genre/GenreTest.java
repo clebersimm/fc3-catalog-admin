@@ -7,7 +7,7 @@ import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
 import com.fullcycle.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
 
 public class GenreTest {
-    
+
     @Test
     public void givenValidParams_whenCallNewGenre_shouldInstantiateAGenre() {
         final var expectedName = "Ação";
@@ -18,7 +18,7 @@ public class GenreTest {
         Assertions.assertNotNull(actualGenre.getId());
         Assertions.assertEquals(expectedName, actualGenre.getName());
         Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
-        Assertions.assertEquals(expectedCategories, actualGenre.getCategories().sise());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories().size());
         Assertions.assertNotNull(actualGenre.getCreatedAt());
         Assertions.assertNotNull(actualGenre.getUpdatedAt());
     }
@@ -30,7 +30,7 @@ public class GenreTest {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "name should not be null";
         final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-        final var actualException = Assertions.assertThrows(DomainException.class, ()->{
+        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
             actualGenre.validate(new ThrowsValidationHandler());
         });
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
@@ -44,7 +44,7 @@ public class GenreTest {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "name should not be empty";
         final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-        final var actualException = Assertions.assertThrows(DomainException.class, ()->{
+        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
             actualGenre.validate(new ThrowsValidationHandler());
         });
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
@@ -54,21 +54,22 @@ public class GenreTest {
     @Test
     public void givenInvalidNameLenghtGT255_whenCallNewGenreAndValid_shouldThrowError() {
         final String expectedName = """
-            test test test test test test 
-            test test test test test test 
-            test test test test test test 
-            test test test test test test 
-            test test test test test test 
-            test test test test test test 
-            test test test test test test 
-            test test test test test test 
-            test test test test 
-                """;;
+                test test test test test test
+                test test test test test test
+                test test test test test test
+                test test test test test test
+                test test test test test test
+                test test test test test test
+                test test test test test test
+                test test test test test test
+                test test test test
+                    """;
+        ;
         final var expectedIsActive = true;
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "name must be between 1 and 255 characters";
         final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-        final var actualException = Assertions.assertThrows(DomainException.class, ()->{
+        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
             actualGenre.validate(new ThrowsValidationHandler());
         });
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
