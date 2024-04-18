@@ -2,9 +2,7 @@ package com.fullcycle.admin.catalog.domain.genre;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
-import com.fullcycle.admin.catalog.domain.validation.handler.ThrowsValidationHandler;
+import com.fullcycle.admin.catalog.domain.exceptions.NotificationException;
 
 public class GenreTest {
 
@@ -28,10 +26,9 @@ public class GenreTest {
         final String expectedName = null;
         final var expectedIsActive = true;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "name should not be null";
-        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
-            actualGenre.validate(new ThrowsValidationHandler());
+        final var expectedErrorMessage = "'name' should not be null";
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> {
+            Genre.newGenre(expectedName, expectedIsActive);
         });
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
         Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
@@ -42,10 +39,9 @@ public class GenreTest {
         final String expectedName = "";
         final var expectedIsActive = true;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "name should not be empty";
-        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
-            actualGenre.validate(new ThrowsValidationHandler());
+        final var expectedErrorMessage = "'name' should not be empty";
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> {
+            Genre.newGenre(expectedName, expectedIsActive);
         });
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
         Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
@@ -67,10 +63,9 @@ public class GenreTest {
         ;
         final var expectedIsActive = true;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "name must be between 1 and 255 characters";
-        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
-            actualGenre.validate(new ThrowsValidationHandler());
+        final var expectedErrorMessage = "'name' must be between 1 and 255 characters";
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> {
+            Genre.newGenre(expectedName, expectedIsActive);
         });
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
         Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());

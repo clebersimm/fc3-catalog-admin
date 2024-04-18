@@ -7,7 +7,9 @@ import java.util.List;
 
 import com.fullcycle.admin.catalog.domain.AggregateRoot;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
+import com.fullcycle.admin.catalog.domain.exceptions.NotificationException;
 import com.fullcycle.admin.catalog.domain.validation.ValidationHandler;
+import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 
 public class Genre extends AggregateRoot<GenreID> {
 
@@ -32,6 +34,11 @@ public class Genre extends AggregateRoot<GenreID> {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
+        final var notification = Notification.create();
+        validate(notification);
+        if (notification.hasError()) {
+            throw new NotificationException("Failed to create a Aggregate Genre", notification);
+        }
     }
 
     public static Genre newGenre(final String name, final boolean active) {
@@ -59,8 +66,7 @@ public class Genre extends AggregateRoot<GenreID> {
 
     @Override
     public void validate(ValidationHandler handler) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'validate'");
+        new GenreValidator(this, handler).validate();
     }
 
     public String getName() {
