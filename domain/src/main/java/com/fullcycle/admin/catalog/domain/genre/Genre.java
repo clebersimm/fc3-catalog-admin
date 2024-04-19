@@ -8,6 +8,7 @@ import java.util.List;
 import com.fullcycle.admin.catalog.domain.AggregateRoot;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.NotificationException;
+import com.fullcycle.admin.catalog.domain.utils.InstantUtils;
 import com.fullcycle.admin.catalog.domain.validation.ValidationHandler;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 
@@ -34,6 +35,10 @@ public class Genre extends AggregateRoot<GenreID> {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
+        validate();
+    }
+
+    private void validate() {
         final var notification = Notification.create();
         validate(notification);
         if (notification.hasError()) {
@@ -91,5 +96,34 @@ public class Genre extends AggregateRoot<GenreID> {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Genre deactivate() {
+        if(getDeletedAt() == null){
+            this.deletedAt = InstantUtils.now();
+        }
+        this.active = false;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre activate() {
+        this.deletedAt = null;
+        this.active = true;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre update(final String aName,final boolean isActive,final  List<CategoryID> categories) {
+        this.name = aName;
+        if(isActive){
+            activate();
+        } else {
+            deactivate();
+        }
+        this.categories = new ArrayList<>(categories);
+        this.updatedAt = InstantUtils.now();
+        validate();
+        return this;
     }
 }
