@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +40,7 @@ public class ListCategoriesUseCaseTest {
         final var expectedTerms = "";
         final var expectedSort = "createdAt";
         final var expectedDirection = "asc";
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                 expectedDirection);
         final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories);
         final var expectedItemCount = 2;
@@ -61,7 +61,7 @@ public class ListCategoriesUseCaseTest {
         final var expectedTerms = "";
         final var expectedSort = "createdAt";
         final var expectedDirection = "asc";
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                 expectedDirection);
         final var expectedPagination = new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories);
         final var expectedItemCount = 0;
@@ -82,7 +82,7 @@ public class ListCategoriesUseCaseTest {
         final var expectedSort = "createdAt";
         final var expectedDirection = "asc";
         final var expectedErrorMessage = "Gateway error";
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                 expectedDirection);
         
         Mockito.when(categoryGateway.findAll(eq(aQuery))).thenThrow(new IllegalStateException(expectedErrorMessage));

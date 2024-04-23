@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
@@ -51,7 +51,7 @@ public class CategoryMysqlGateway implements CategoryGateway {
     }
 
     @Override
-    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
+    public Pagination<Category> findAll(final SearchQuery aQuery) {
         final var page = PageRequest.of(aQuery.page(), aQuery.perPage(), Sort.by(Direction.fromString(aQuery.direction()),aQuery.sort()));
         final var specication = Optional.ofNullable(aQuery.terms())
             .filter(str -> !str.isBlank())

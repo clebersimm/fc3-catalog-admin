@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
 import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 
@@ -37,7 +36,7 @@ public class DefaultUpdateCategoryUseCase extends UpdateCategoryUseCase {
                 UpdateCategoryOutput::from);
     }
 
-    private Supplier<DomainException> notFound(final CategoryID anId) {
+    private Supplier<NotFoundException> notFound(final CategoryID anId) {
         return ()-> NotFoundException.with(Category.class, anId);
     }
 

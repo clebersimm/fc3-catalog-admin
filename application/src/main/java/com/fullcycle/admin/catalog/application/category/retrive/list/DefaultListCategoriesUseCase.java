@@ -3,7 +3,7 @@ package com.fullcycle.admin.catalog.application.category.retrive.list;
 import java.util.Objects;
 
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 
 public class DefaultListCategoriesUseCase extends ListCategoriesUseCase {
@@ -18,7 +18,7 @@ public class DefaultListCategoriesUseCase extends ListCategoriesUseCase {
 
 
     @Override
-    public Pagination<CategoryListOutput> execute(CategorySearchQuery aQuery) {
+    public Pagination<CategoryListOutput> execute(SearchQuery aQuery) {
         return this.categoryGateway.findAll(aQuery)
             .map(CategoryListOutput::from);
     }

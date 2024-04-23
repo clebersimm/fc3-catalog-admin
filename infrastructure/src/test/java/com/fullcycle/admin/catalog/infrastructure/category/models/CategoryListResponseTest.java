@@ -1,9 +1,9 @@
 package com.fullcycle.admin.catalog.infrastructure.category.models;
 
 import com.fullcycle.admin.catalog.JacksonTest;
+import com.fullcycle.admin.catalog.domain.utils.InstantUtils;
 
 import java.io.IOException;
-import java.time.Instant;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,8 +21,8 @@ public class CategoryListResponseTest {
         final var expectedName = "Filmes";
         final var expectedDescription = "Mais assistida";
         final var expectedIsActive = false;
-        final var expectedCreatedAt = Instant.now();
-        final var expectedDeletedAt = Instant.now();
+        final var expectedCreatedAt = InstantUtils.now();
+        final var expectedDeletedAt = InstantUtils.now();
         final var response = new CategoryListResponse(expectedId, expectedName, expectedDescription, expectedIsActive,
                 expectedCreatedAt,
                 expectedDeletedAt);

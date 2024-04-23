@@ -48,7 +48,7 @@ public class Genre extends AggregateRoot<GenreID> {
 
     public static Genre newGenre(final String name, final boolean active) {
         final var id = GenreID.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = active ? null : now;
         return new Genre(id, name, active, new ArrayList<>(), now, now, deletedAt);
     }
@@ -121,9 +121,27 @@ public class Genre extends AggregateRoot<GenreID> {
         } else {
             deactivate();
         }
-        this.categories = new ArrayList<>(categories);
+        this.categories = new ArrayList<>(categories != null ? categories : Collections.emptyList());
         this.updatedAt = InstantUtils.now();
         validate();
+        return this;
+    }
+
+    public Genre addCategory(final CategoryID aCategoryID) {
+        if(aCategoryID == null){
+            return this;
+        }
+        this.categories.add(aCategoryID);
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre removeCategory(CategoryID aCategoryID) {
+        if(aCategoryID == null){
+            return this;
+        }
+        this.categories.remove(aCategoryID);
+        this.updatedAt = InstantUtils.now();
         return this;
     }
 }

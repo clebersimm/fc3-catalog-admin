@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,6 @@ import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryOut
 import com.fullcycle.admin.catalog.application.category.update.UpdateCategoryUseCase;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
 import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
 import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;

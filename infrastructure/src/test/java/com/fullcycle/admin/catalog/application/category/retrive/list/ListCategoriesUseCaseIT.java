@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fullcycle.admin.catalog.IntegrationTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
-import com.fullcycle.admin.catalog.domain.category.CategorySearchQuery;
+import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 
@@ -45,7 +45,7 @@ public class ListCategoriesUseCaseIT {
         final var expectedDirection = "asc";
         final var expectedItemsCount = 0;
         final var expectedTotal = 0;
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
         Assertions.assertEquals(expectedPage, actualResult.currentPage());
@@ -70,7 +70,7 @@ public class ListCategoriesUseCaseIT {
     ) {
         final var expectedSort = "name";
         final var expectedDirection = "asc";
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
         Assertions.assertEquals(expectedPage, actualResult.currentPage());
@@ -96,7 +96,7 @@ public class ListCategoriesUseCaseIT {
         final String expectedCategoryName
     ) {
         final var expectedTerms = "";
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
         Assertions.assertEquals(expectedPage, actualResult.currentPage());
@@ -122,7 +122,7 @@ public class ListCategoriesUseCaseIT {
         final var expectedTerms = "";
         final var expectedSort = "name";
         final var expectedDirection = "asc";
-        final var aQuery = new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+        final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var actualResult = useCase.execute(aQuery);
         Assertions.assertEquals(expectedItemsCount, actualResult.items().size());
         Assertions.assertEquals(expectedPage, actualResult.currentPage());

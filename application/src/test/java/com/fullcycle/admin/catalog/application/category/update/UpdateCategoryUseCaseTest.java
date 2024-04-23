@@ -23,6 +23,7 @@ import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.DomainException;
+import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 public class UpdateCategoryUseCaseTest {
@@ -164,7 +165,8 @@ public class UpdateCategoryUseCaseTest {
         when(categoryGateway
                 .findById(eq(CategoryID.from(expectedId))))
                 .thenReturn(Optional.empty());
-        final var actualException = Assertions.assertThrows(DomainException.class, ()->useCase.execute(aCommand));
+        final var actualException = Assertions.assertThrows(NotFoundException.class, ()->useCase.execute(aCommand));
+        System.out.println(actualException.getErrors().size());
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
         Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
         Mockito.verify(categoryGateway, times(1)).findById(eq(CategoryID.from(expectedId)));

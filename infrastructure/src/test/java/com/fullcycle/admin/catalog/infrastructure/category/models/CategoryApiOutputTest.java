@@ -1,7 +1,6 @@
 package com.fullcycle.admin.catalog.infrastructure.category.models;
 
 import java.io.IOException;
-import java.time.Instant;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.JacksonTester;
 
 import com.fullcycle.admin.catalog.JacksonTest;
+import com.fullcycle.admin.catalog.domain.utils.InstantUtils;
 
 @JacksonTest
 public class CategoryApiOutputTest {
@@ -21,9 +21,9 @@ public class CategoryApiOutputTest {
         final var expectedName = "Filmes";
         final var expectedDescription = "Mais assistida";
         final var expectedIsActive = false;
-        final var expectedCreatedAt = Instant.now();
-        final var expectedDeletedAt = Instant.now();
-        final var expectedUpdatedAt = Instant.now();
+        final var expectedCreatedAt = InstantUtils.now();
+        final var expectedDeletedAt = InstantUtils.now();
+        final var expectedUpdatedAt = InstantUtils.now();
         final var response = new CategoryApiOutput(expectedId, expectedName, expectedDescription, expectedIsActive,
                 expectedCreatedAt,
                 expectedUpdatedAt, expectedDeletedAt);
@@ -44,9 +44,9 @@ public class CategoryApiOutputTest {
         final var expectedName = "Filmes";
         final var expectedDescription = "Mais assistida";
         final var expectedIsActive = false;
-        final var expectedCreatedAt = Instant.now();
-        final var expectedDeletedAt = Instant.now();
-        final var expectedUpdatedAt = Instant.now();
+        final var expectedCreatedAt = InstantUtils.now();
+        final var expectedDeletedAt = InstantUtils.now();
+        final var expectedUpdatedAt = InstantUtils.now();
         final var json = """
                 {
                     "id":"%s",
