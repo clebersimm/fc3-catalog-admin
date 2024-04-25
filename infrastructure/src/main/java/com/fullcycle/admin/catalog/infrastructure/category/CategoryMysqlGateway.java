@@ -1,5 +1,8 @@
 package com.fullcycle.admin.catalog.infrastructure.category;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
@@ -32,11 +35,11 @@ public class CategoryMysqlGateway implements CategoryGateway {
 
     @Override
     public void deleteById(final CategoryID anId) {
-        if(this.repository.existsById(anId.getValue()))
+        if (this.repository.existsById(anId.getValue()))
             this.repository.deleteById(anId.getValue());
     }
 
-    private Category save(final Category aCategory){
+    private Category save(final Category aCategory) {
         return this.repository.save(CategoryJpaEntity.from(aCategory)).toAggregate();
     }
 
@@ -52,15 +55,21 @@ public class CategoryMysqlGateway implements CategoryGateway {
 
     @Override
     public Pagination<Category> findAll(final SearchQuery aQuery) {
-        final var page = PageRequest.of(aQuery.page(), aQuery.perPage(), Sort.by(Direction.fromString(aQuery.direction()),aQuery.sort()));
+        final var page = PageRequest.of(aQuery.page(), aQuery.perPage(),
+                Sort.by(Direction.fromString(aQuery.direction()), aQuery.sort()));
         final var specication = Optional.ofNullable(aQuery.terms())
-            .filter(str -> !str.isBlank())
-            .map(str -> {
-                return SpecificationUtils.<CategoryJpaEntity>like("name", str)
-                .or(SpecificationUtils.<CategoryJpaEntity>like("description",str));
-            }).orElse(null);
-        final var pageResult = this.repository.findAll(Specification.where(specication),page);
-        return new Pagination<>(pageResult.getNumber(), pageResult.getSize(), 
-            pageResult.getTotalElements(), pageResult.map(CategoryJpaEntity::toAggregate).toList());
+                .filter(str -> !str.isBlank())
+                .map(str -> {
+                    return SpecificationUtils.<CategoryJpaEntity>like("name", str)
+                            .or(SpecificationUtils.<CategoryJpaEntity>like("description", str));
+                }).orElse(null);
+        final var pageResult = this.repository.findAll(Specification.where(specication), page);
+        return new Pagination<>(pageResult.getNumber(), pageResult.getSize(),
+                pageResult.getTotalElements(), pageResult.map(CategoryJpaEntity::toAggregate).toList());
+    }
+
+    @Override
+    public List<CategoryID> existsById(Iterable<CategoryID> ids) {
+        return Collections.emptyList();
     }
 }

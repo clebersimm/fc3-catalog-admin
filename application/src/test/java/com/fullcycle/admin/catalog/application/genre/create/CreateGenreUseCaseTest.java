@@ -37,7 +37,7 @@ public class CreateGenreUseCaseTest {
         final var aCommand = CreateGenreCommand.with(expectName, expectedIsActive, asString(expectedCategories));
         when(genreGateway.create(any())).thenAnswer(returnsFirstArg());
         //when
-        final var actualOutput = useCase.execute(acommand);
+        final var actualOutput = useCase.execute(aCommand);
         //then
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
