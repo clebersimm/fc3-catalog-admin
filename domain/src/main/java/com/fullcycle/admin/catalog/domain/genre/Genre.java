@@ -99,7 +99,7 @@ public class Genre extends AggregateRoot<GenreID> {
     }
 
     public Genre deactivate() {
-        if(getDeletedAt() == null){
+        if (getDeletedAt() == null) {
             this.deletedAt = InstantUtils.now();
         }
         this.active = false;
@@ -114,9 +114,9 @@ public class Genre extends AggregateRoot<GenreID> {
         return this;
     }
 
-    public Genre update(final String aName,final boolean isActive,final  List<CategoryID> categories) {
+    public Genre update(final String aName, final boolean isActive, final List<CategoryID> categories) {
         this.name = aName;
-        if(isActive){
+        if (isActive) {
             activate();
         } else {
             deactivate();
@@ -128,7 +128,7 @@ public class Genre extends AggregateRoot<GenreID> {
     }
 
     public Genre addCategory(final CategoryID aCategoryID) {
-        if(aCategoryID == null){
+        if (aCategoryID == null) {
             return this;
         }
         this.categories.add(aCategoryID);
@@ -137,10 +137,19 @@ public class Genre extends AggregateRoot<GenreID> {
     }
 
     public Genre removeCategory(CategoryID aCategoryID) {
-        if(aCategoryID == null){
+        if (aCategoryID == null) {
             return this;
         }
         this.categories.remove(aCategoryID);
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre addCategories(List<CategoryID> categories) {
+        if (categories == null || categories.isEmpty()) {
+            return this;
+        }
+        this.categories.addAll(categories);
         this.updatedAt = InstantUtils.now();
         return this;
     }

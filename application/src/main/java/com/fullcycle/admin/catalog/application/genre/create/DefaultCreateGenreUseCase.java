@@ -35,6 +35,7 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
         if (notification.hasError()) {
             throw new NotificationException("Could not create Aggregate Genre", notification);
         }
+        aGenre.addCategories(categories);
         return CreateGenreOutput.from(this.genreGateway.create(aGenre));
     }
 
@@ -48,7 +49,7 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
             final var commandIds = new ArrayList<>(ids);
             commandIds.removeAll(retrivedIds);
             final var missingIds = commandIds.stream().map(CategoryID::getValue).collect(Collectors.joining(","));
-            notification.append(new Error("Some categories cloud no be found: %s".formatted(missingIds)));
+            notification.append(new Error("Some categories could not be found: %s".formatted(missingIds)));
 
         }
         return notification;
