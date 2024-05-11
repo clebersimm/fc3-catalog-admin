@@ -25,39 +25,43 @@ import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
 
 @ExtendWith(MockitoExtension.class)
 public class UpdateGenreUseCaseTest {
-    @InjectMocks
-    private DefaultUpdateGenreUseCase useCase;
-    @Mock
-    private CategoryGateway categoryGateway;
-    @Mock
-    private GenreGateway genreGateway;
+        @InjectMocks
+        private DefaultUpdateGenreUseCase useCase;
+        @Mock
+        private CategoryGateway categoryGateway;
+        @Mock
+        private GenreGateway genreGateway;
 
-    @Test
-    public void givenAValidCommand_whenCallsCreateUpdateGenre_shouldReturnGenreId() {
-        // given
-        final var aGenre = Genre.newGenre("acao", true);
-        final var expectedId = aGenre.getId();
-        final var expectedName = "Ação";
-        final var expectedIsActive = true;
-        final var expectedCategories = List.<CategoryID>of();
-        final var aCommand = UpdateGenreCommand.with(expectedId.getValue(), expectedName, expectedIsActive,
-                expectedCategories);
-        Mockito.when(genreGateway.findById(any())).thenReturn(Optional.of(Genre.with(aGenre)));
-        Mockito.when(genreGateway.update(any())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-        // when
-        final var actualOutput = useCase.execute(aCommand);
-        // then
-        Assertions.assertNotNull(actualOutput);
-        Assertions.assertEquals(expectedId.getValue(), actualOutput.id());
-        Mockito.verify(genreGateway, times(1)).findById(expectedId);
-        Mockito.verify(genreGateway, times(1))
-                .update(Mockito.argThat(aUpdatedGenre -> Objects.equals(expectedName, aUpdatedGenre.getId())
-                        && Objects.equals(expectedName, aUpdatedGenre.getName())
-                        && Objects.equals(expectedIsActive, aUpdatedGenre.isActive())
-                        && Objects.equals(expectedCategories, aUpdatedGenre.getCategories())
-                        && Objects.equals(aGenre.getCreatedAt(), aUpdatedGenre.getCreatedAt())
-                        && aGenre.getUpdatedAt().isBefore(aUpdatedGenre.getUpdatedAt())
-                        && Objects.isNull(aUpdatedGenre.getDeletedAt())
-                ));
-    }
+        @Test
+        public void givenAValidCommand_whenCallsCreateUpdateGenre_shouldReturnGenreId() {
+                // given
+                final var aGenre = Genre.newGenre("acao", true);
+                final var expectedId = aGenre.getId();
+                final var expectedName = "Ação";
+                final var expectedIsActive = true;
+                final var expectedCategories = List.<CategoryID>of();
+                final var aCommand = UpdateGenreCommand.with(expectedId.getValue(), expectedName, expectedIsActive,
+                                asString(expectedCategories));
+                Mockito.when(genreGateway.findById(any())).thenReturn(Optional.of(Genre.with(aGenre)));
+                Mockito.when(genreGateway.update(any())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+                // when
+                final var actualOutput = useCase.execute(aCommand);
+                // then
+                Assertions.assertNotNull(actualOutput);
+                Assertions.assertEquals(expectedId.getValue(), actualOutput.id());
+                Mockito.verify(genreGateway, times(1)).findById(expectedId);
+                Mockito.verify(genreGateway, times(1))
+                                .update(Mockito.argThat(aUpdatedGenre -> Objects.equals(expectedName,
+                                                aUpdatedGenre.getId())
+                                                && Objects.equals(expectedName, aUpdatedGenre.getName())
+                                                && Objects.equals(expectedIsActive, aUpdatedGenre.isActive())
+                                                && Objects.equals(expectedCategories, aUpdatedGenre.getCategories())
+                                                && Objects.equals(aGenre.getCreatedAt(), aUpdatedGenre.getCreatedAt())
+                                                && aGenre.getUpdatedAt().isBefore(aUpdatedGenre.getUpdatedAt())
+                                                && Objects.isNull(aUpdatedGenre.getDeletedAt())));
+        }
+
+        private List<String> asString(final List<CategoryID> ids) {
+                return ids.stream().map(CategoryID::getValue).toList();
+        }
 }
