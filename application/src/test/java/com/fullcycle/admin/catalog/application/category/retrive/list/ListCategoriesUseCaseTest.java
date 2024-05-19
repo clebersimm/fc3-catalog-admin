@@ -13,21 +13,21 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fullcycle.admin.catalog.application.UseCaseTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.pagination.SearchQuery;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 
-@ExtendWith(MockitoExtension.class)
-public class ListCategoriesUseCaseTest {
+public class ListCategoriesUseCaseTest extends UseCaseTest {
     @InjectMocks
     private DefaultListCategoriesUseCase useCase;
     @Mock
     private CategoryGateway categoryGateway;
 
-    @BeforeEach
-    void cleanUp() {
-        Mockito.reset(categoryGateway);
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     @Test
@@ -84,9 +84,9 @@ public class ListCategoriesUseCaseTest {
         final var expectedErrorMessage = "Gateway error";
         final var aQuery = new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort,
                 expectedDirection);
-        
+
         Mockito.when(categoryGateway.findAll(eq(aQuery))).thenThrow(new IllegalStateException(expectedErrorMessage));
-        final var actualException = Assertions.assertThrows(IllegalStateException.class, ()-> useCase.execute(aQuery));
+        final var actualException = Assertions.assertThrows(IllegalStateException.class, () -> useCase.execute(aQuery));
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
     }
 

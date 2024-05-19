@@ -1,31 +1,31 @@
 package com.fullcycle.admin.catalog.application.category.retrive.get;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fullcycle.admin.catalog.application.UseCaseTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.NotFoundException;
 
-@ExtendWith(MockitoExtension.class)
-public class GetCategoryByIdUseCaseTest {
+public class GetCategoryByIdUseCaseTest extends UseCaseTest {
     @InjectMocks
     private DefaultGetCategoryByIdUseCase useCase;
     @Mock
     private CategoryGateway categoryGateway;
 
-    @BeforeEach
-    void cleanUp() {
-        Mockito.reset(categoryGateway);
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     @Test
@@ -61,7 +61,8 @@ public class GetCategoryByIdUseCaseTest {
     public void givenAValidId_whenGatewayThrowsError_shouldReturnException() {
         final var expectedErrorMessage = "Gateway error";
         final var expectedId = CategoryID.from("1234");
-        Mockito.when(categoryGateway.findById(Mockito.eq(expectedId))).thenThrow(new IllegalStateException(expectedErrorMessage));
+        Mockito.when(categoryGateway.findById(Mockito.eq(expectedId)))
+                .thenThrow(new IllegalStateException(expectedErrorMessage));
         final var actualException = Assertions.assertThrows(IllegalStateException.class,
                 () -> useCase.execute(expectedId.getValue()));
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());

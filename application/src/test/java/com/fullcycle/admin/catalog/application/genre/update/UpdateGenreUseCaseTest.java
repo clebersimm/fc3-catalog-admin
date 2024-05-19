@@ -10,27 +10,30 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fullcycle.admin.catalog.application.UseCaseTest;
 import com.fullcycle.admin.catalog.domain.category.CategoryGateway;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.exceptions.NotificationException;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 import com.fullcycle.admin.catalog.domain.genre.GenreGateway;
 
-@ExtendWith(MockitoExtension.class)
-public class UpdateGenreUseCaseTest {
+public class UpdateGenreUseCaseTest extends UseCaseTest {
         @InjectMocks
         private DefaultUpdateGenreUseCase useCase;
         @Mock
         private CategoryGateway categoryGateway;
         @Mock
         private GenreGateway genreGateway;
+
+        @Override
+        protected List<Object> getMocks() {
+                return List.of(categoryGateway, genreGateway);
+        }
 
         @Test
         public void givenAValidCommand_whenCallsCreateUpdateGenre_shouldReturnGenreId() {
