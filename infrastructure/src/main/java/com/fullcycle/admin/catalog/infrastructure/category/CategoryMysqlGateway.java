@@ -1,6 +1,5 @@
 package com.fullcycle.admin.catalog.infrastructure.category;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
