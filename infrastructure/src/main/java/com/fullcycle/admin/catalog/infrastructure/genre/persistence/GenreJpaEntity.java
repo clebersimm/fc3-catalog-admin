@@ -7,6 +7,7 @@ import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -64,12 +65,14 @@ public class GenreJpaEntity {
                 GenreID.from(getId()),
                 getName(),
                 isActive(),
-                getCategories().stream().map(it -> CategoryID.from(it.getId().getCategoryId())).toList(),
+                getCategoryIDS(),
                 getCreatedAt(),
                 getUpdatedAt(),
                 getDeletedAt()
         );
     }
+
+
 
     private void addCategory(final CategoryID andId){
         this.categories.add(GenreCategoryJpaEntity.from(this, andId));
@@ -77,6 +80,10 @@ public class GenreJpaEntity {
 
     private void removeCategory(final CategoryID anId) {
         this.categories.remove(GenreCategoryJpaEntity.from(this, anId));
+    }
+
+    public List<CategoryID> getCategoryIDS() {
+        return getCategories().stream().map(it -> CategoryID.from(it.getId().getCategoryId())).toList();
     }
 
     public String getId() {
@@ -134,4 +141,5 @@ public class GenreJpaEntity {
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
     }
+
 }
