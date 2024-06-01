@@ -12,6 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "genres")
 public class GenreJpaEntity {
+    @Id
     @Column(name = "id", nullable = false)
     private String id;
     @Column(name = "name", nullable = false)
