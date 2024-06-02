@@ -159,7 +159,6 @@ public class UpdateCategoryUseCaseTest extends UseCaseTest {
                 Assertions.assertNull(aCategory.getDeletedAt());
                 final var expectedId = "126384684";
                 final var expectedErrorMessage = "Category with ID 126384684 was not found";
-                final var expectedErrorCount = 1;
                 final var aCommand = UpdateCategoryCommand.with(
                                 expectedId,
                                 expectedName,
@@ -170,9 +169,7 @@ public class UpdateCategoryUseCaseTest extends UseCaseTest {
                                 .thenReturn(Optional.empty());
                 final var actualException = Assertions.assertThrows(NotFoundException.class,
                                 () -> useCase.execute(aCommand));
-                System.out.println(actualException.getErrors().size());
-                Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
-                Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+                Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
                 Mockito.verify(categoryGateway, times(1)).findById(eq(CategoryID.from(expectedId)));
                 Mockito.verify(categoryGateway, times(0))
                                 .update(any());

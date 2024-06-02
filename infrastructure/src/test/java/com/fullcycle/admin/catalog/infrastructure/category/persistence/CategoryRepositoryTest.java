@@ -16,13 +16,21 @@ public class CategoryRepositoryTest {
 
     @Test
     public void givenAnInvalidName_whenCallSave_shoudReturnError() {
-        final var aCategory = Category.newCategory("Filmes", "Muitos files", false);
+        final var expectedPropertyName = "name";
+        final var expectedMessage = "not-null property references a null or transient value : com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryJpaEntity.name";
+
+        final var aCategory = Category.newCategory("Filmes", "A categoria mais assistida", true);
+
         final var anEntity = CategoryJpaEntity.from(aCategory);
         anEntity.setName(null);
-        categoryRepository.save(anEntity);
-        final var actualException = Assertions.assertThrows(DataIntegrityViolationException.class, ()->categoryRepository.save(anEntity));
-        final var actualCause = Assertions.assertInstanceOf(PropertyValueException.class, actualException.getCause());
-        Assertions.assertEquals(categoryRepository, categoryRepository);
-        Assertions.assertEquals("name", actualCause.getPropertyName());
+
+        final var actualException =
+                Assertions.assertThrows(DataIntegrityViolationException.class, () -> categoryRepository.save(anEntity));
+
+        final var actualCause =
+                Assertions.assertInstanceOf(PropertyValueException.class, actualException.getCause());
+
+        Assertions.assertEquals(expectedPropertyName, actualCause.getPropertyName());
+        Assertions.assertEquals(expectedMessage, actualCause.getMessage());
     }
 }
