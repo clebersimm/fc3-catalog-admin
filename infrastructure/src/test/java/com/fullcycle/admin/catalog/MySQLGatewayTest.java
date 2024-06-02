@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,8 +24,9 @@ import org.springframework.test.context.ActiveProfiles;
     includeFilters = {
     @ComponentScan.Filter(
         type = FilterType.REGEX, 
-        pattern = ".[MysqlGateway]")
+        pattern = ".*MysqlGateway")
 })
 @ExtendWith(CleanUpExtension.class)
+@Tag("integrationTest")
 public @interface MySQLGatewayTest {    
 }
