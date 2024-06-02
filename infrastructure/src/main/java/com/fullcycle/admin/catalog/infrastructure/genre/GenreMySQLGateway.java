@@ -18,7 +18,7 @@ public class GenreMySQLGateway implements GenreGateway {
     private final GenreRepository genreRepository;
 
     public GenreMySQLGateway(final GenreRepository genreRepository) {
-        this.genreRepository = Objects.requireNonNull(genreRepository);
+        this.genreRepository = genreRepository;
     }
 
     @Override

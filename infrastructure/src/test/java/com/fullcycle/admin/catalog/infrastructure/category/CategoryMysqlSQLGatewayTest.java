@@ -16,7 +16,7 @@ import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryR
 @MySQLGatewayTest
 public class CategoryMysqlSQLGatewayTest {
     @Autowired
-    private CategoryMysqlGateway categoryMysqlGateway;
+    private CategoryMySQLGateway categoryMysqlGateway;
     @Autowired
     private CategoryRepository categoryRepository;
 

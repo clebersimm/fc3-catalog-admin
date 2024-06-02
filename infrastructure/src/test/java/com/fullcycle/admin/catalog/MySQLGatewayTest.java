@@ -21,11 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ComponentScan(
     basePackages = "com.fullcycle.admin.catalog",
     useDefaultFilters = false,
-    includeFilters = {
-    @ComponentScan.Filter(
-        type = FilterType.REGEX, 
-        pattern = ".*MysqlGateway")
-})
+    includeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*MySQLGateway")})
 @ExtendWith(CleanUpExtension.class)
 @Tag("integrationTest")
 public @interface MySQLGatewayTest {    

@@ -20,10 +20,10 @@ import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryR
 import com.fullcycle.admin.catalog.infrastructure.utils.SpecificationUtils;
 
 @Component
-public class CategoryMysqlGateway implements CategoryGateway {
+public class CategoryMySQLGateway implements CategoryGateway {
     private final CategoryRepository repository;
 
-    public CategoryMysqlGateway(final CategoryRepository repository) {
+    public CategoryMySQLGateway(final CategoryRepository repository) {
         this.repository = repository;
     }
 

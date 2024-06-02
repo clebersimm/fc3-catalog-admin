@@ -4,7 +4,7 @@ import com.fullcycle.admin.catalog.MySQLGatewayTest;
 import com.fullcycle.admin.catalog.domain.category.Category;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
-import com.fullcycle.admin.catalog.infrastructure.category.CategoryMysqlGateway;
+import com.fullcycle.admin.catalog.infrastructure.category.CategoryMySQLGateway;
 import com.fullcycle.admin.catalog.infrastructure.genre.persistence.GenreJpaEntity;
 import com.fullcycle.admin.catalog.infrastructure.genre.persistence.GenreRepository;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @MySQLGatewayTest
 public class GenreMySQLGatewayTest {
     @Autowired
-    private CategoryMysqlGateway categoryMysqlGateway;
+    private CategoryMySQLGateway categoryMysqlGateway;
     @Autowired
     private GenreMySQLGateway genreMySQLGateway;
     @Autowired
