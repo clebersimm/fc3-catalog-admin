@@ -1,0 +1,1 @@
+ALTER TABLE genres ALTER COLUMN deleted_at DATETIME(6) NULL;

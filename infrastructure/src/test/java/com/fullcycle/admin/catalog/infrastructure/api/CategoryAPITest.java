@@ -70,6 +70,7 @@ public class CategoryAPITest {
                 final var expectedName = "Filmes";
                 final var expectedDescription = "Categoria mais assistida";
                 final var expectedIsActive = true;
+
                 final var aInput = new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
                 // when
                 Mockito.when(cretCreateCategoryUseCase.execute(any()))

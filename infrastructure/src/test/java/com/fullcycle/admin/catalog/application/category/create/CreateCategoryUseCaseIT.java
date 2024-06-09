@@ -16,7 +16,7 @@ import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryR
 @IntegrationTest
 public class CreateCategoryUseCaseIT {
     @Autowired
-    private DefaultCreateCategoryUseCase useCase;
+    private CreateCategoryUseCase useCase;
     @Autowired
     private CategoryRepository categoryRepository;
 
