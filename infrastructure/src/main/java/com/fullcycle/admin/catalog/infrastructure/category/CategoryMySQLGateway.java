@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalog.infrastructure.category;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -68,7 +69,8 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public List<CategoryID> existsById(Iterable<CategoryID> ids) {
-        return Collections.emptyList();
+    public List<CategoryID> existsById(final Iterable<CategoryID> categoryIDS) {
+        final var ids = StreamSupport.stream(categoryIDS.spliterator(), false).map(CategoryID::getValue).toList();
+        return this.repository.existsByIds(ids).stream().map(CategoryID::from).toList();
     }
 }

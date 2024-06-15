@@ -13,19 +13,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class CleanUpExtension implements BeforeEachCallback {
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
-        final var aContext = SpringExtension.getApplicationContext(context);
+        final var appContext = SpringExtension.getApplicationContext(context);
 
-        final var repositories = SpringExtension.getApplicationContext(context).getBeansOfType(CrudRepository.class).values();
         cleanUp(List.of(
-                aContext.getBean(GenreRepository.class),
-                aContext.getBean(CategoryRepository.class)
+                appContext.getBean(GenreRepository.class),
+                appContext.getBean(CategoryRepository.class)
         ));
-        final var em = aContext.getBean(TestEntityManager.class);
-        em.flush();
-        em.clear();
     }
 
-    private void cleanUp(final Collection<CrudRepository> repositories){
+    private void cleanUp(final Collection<CrudRepository> repositories) {
         repositories.forEach(CrudRepository::deleteAll);
     }
 }

@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,15 +18,12 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fullcycle.admin.catalog.infrastructure.configuration.ObjectMapperConfig;
 
 @Target(ElementType.TYPE)
-@ActiveProfiles("test-integration")
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
+@ActiveProfiles("test-integration")
 @WebMvcTest
-@ComponentScan(basePackages = "com.fullcycle.admin.catalog", useDefaultFilters = false, includeFilters = {
-        @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".[MysqlGateway]")
-})
-@ExtendWith(CleanUpExtension.class)
 @Import(ObjectMapperConfig.class)
+@Tag("integrationTest")
 public @interface ControllerTest {
     @AliasFor(annotation = WebMvcTest.class, attribute = "controllers")
     Class<?>[] controllers() default {};

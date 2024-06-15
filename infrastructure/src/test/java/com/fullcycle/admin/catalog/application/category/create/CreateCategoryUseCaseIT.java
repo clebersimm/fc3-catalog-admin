@@ -19,7 +19,6 @@ public class CreateCategoryUseCaseIT {
     private CreateCategoryUseCase useCase;
     @Autowired
     private CategoryRepository categoryRepository;
-
     //Neste caso sendo utilizado para verificar dentro do bean-spring
     @SpyBean
     private CategoryGateway categoryGateway;

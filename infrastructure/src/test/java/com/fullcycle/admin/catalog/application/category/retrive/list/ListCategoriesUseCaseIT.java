@@ -56,8 +56,8 @@ public class ListCategoriesUseCaseIT {
     @ParameterizedTest
     @CsvSource({
         "fil,0,10,1,1,Filmes",
-        "net,0,10,1,1,Originais netflix",
-        "ZON,0,10,1,1,Originais amazon",
+        "net,0,10,1,1,Netflix Originals",
+        "ZON,0,10,1,1,Amazon Originals",
         "KI,0,10,1,1,Kids"
     })
     public void givenAValidTerm_whenCallListCategories_shouldReturnCategoriesFiltered(

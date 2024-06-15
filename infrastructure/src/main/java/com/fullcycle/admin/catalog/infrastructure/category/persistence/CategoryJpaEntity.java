@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
+@Entity(name = "Category")
 @Table(name = "category")
 public class CategoryJpaEntity {
     @Id
