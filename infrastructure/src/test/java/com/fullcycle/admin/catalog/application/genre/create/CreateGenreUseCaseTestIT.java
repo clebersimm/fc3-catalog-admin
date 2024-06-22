@@ -35,7 +35,7 @@ public class CreateGenreUseCaseTestIT {
         private GenreRepository genreRepository;
 
         @Test
-        public void givenAValidcommand_whenCallsCreateGenre_shouldReturnGenreId() {
+        public void givenAValidCommand_whenCallsCreateGenre_shouldReturnGenreId() {
                 // given
                 final var filmes = categoryGateway.create(Category.newCategory("Filmes","", true));
                 final var expectName = "Ação";
@@ -59,7 +59,30 @@ public class CreateGenreUseCaseTestIT {
         }
 
         @Test
-        public void givenAValidcommandWithInactiveGenre_whenCallsCreateGenre_shouldReturnGenreId() {
+        public void givenAValidCommandWithoutCategories_whenCallsCreateGenre_shouldReturnGenreId() {
+                // given
+                final var expectName = "Ação";
+                final var expectedIsActive = true;
+                final var expectedCategories = List.<CategoryID>of();
+                final var aCommand = CreateGenreCommand.with(expectName, expectedIsActive,
+                        asString(expectedCategories));
+                // when
+                final var actualOutput = useCase.execute(aCommand);
+                // then
+                Assertions.assertNotNull(actualOutput);
+                Assertions.assertNotNull(actualOutput.id());
+
+                final var actualGenre = genreRepository.findById(actualOutput.id()).get();
+                Assertions.assertEquals(expectName, actualGenre.getName());
+                Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+                Assertions.assertTrue(expectedCategories.size() == actualGenre.getCategoryIDS().size() && expectedCategories.containsAll(actualGenre.getCategoryIDS()));
+                Assertions.assertNotNull(actualGenre.getCreatedAt());
+                Assertions.assertNotNull(actualGenre.getUpdatedAt());
+                Assertions.assertNull(actualGenre.getDeletedAt());
+        }
+
+        @Test
+        public void givenAValidCommandWithInactiveGenre_whenCallsCreateGenre_shouldReturnGenreId() {
                 // given
                 final var expectName = "Ação";
                 final var expectedIsActive = false;
