@@ -5,11 +5,11 @@ import java.time.Instant;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.Genre;
 
-public record GenreListOutput(String name, boolean isActive, java.util.List<String> categories, Instant createdAt,
+public record GenreListOutput(String id, String name, boolean isActive, java.util.List<String> categories, Instant createdAt,
         Instant deletedAt) {
     public static GenreListOutput from(
             final Genre genre) {
-        return new GenreListOutput(genre.getName(), genre.isActive(),
+        return new GenreListOutput(genre.getId().getValue(), genre.getName(), genre.isActive(),
                 genre.getCategories().stream().map(CategoryID::getValue).toList(), genre.getCreatedAt(),
                 genre.getDeletedAt());
     }
