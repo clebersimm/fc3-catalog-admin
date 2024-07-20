@@ -2,12 +2,16 @@ package com.fullcycle.admin.catalog.infrastructure.api.controllers;
 
 import com.fullcycle.admin.catalog.application.genre.create.CreateGenreCommand;
 import com.fullcycle.admin.catalog.application.genre.create.CreateGenreUseCase;
+import com.fullcycle.admin.catalog.application.genre.retrive.get.GetGenreByIdUseCase;
+import com.fullcycle.admin.catalog.application.genre.update.UpdateGenreCommand;
+import com.fullcycle.admin.catalog.application.genre.update.UpdateGenreUseCase;
 import com.fullcycle.admin.catalog.domain.pagination.Pagination;
 import com.fullcycle.admin.catalog.infrastructure.api.GenreAPI;
 import com.fullcycle.admin.catalog.infrastructure.genre.models.CreateGenreRequest;
 import com.fullcycle.admin.catalog.infrastructure.genre.models.GenreListResponse;
 import com.fullcycle.admin.catalog.infrastructure.genre.models.GenreResponse;
 import com.fullcycle.admin.catalog.infrastructure.genre.models.UpdateGenreRequest;
+import com.fullcycle.admin.catalog.infrastructure.genre.presenters.GenreApiPresenter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,10 +20,18 @@ import java.net.URI;
 @RestController
 public class GenreController implements GenreAPI {
     private final CreateGenreUseCase createGenreUseCase;
+    private final GetGenreByIdUseCase getGenreByIdUseCase;
+    private final UpdateGenreUseCase updateGenreUseCase;
 
-    public GenreController(CreateGenreUseCase createGenreUseCase) {
+
+    public GenreController(final CreateGenreUseCase createGenreUseCase,
+                           final GetGenreByIdUseCase getGenreByIdUseCase,
+                           final UpdateGenreUseCase updateGenreUseCase) {
         this.createGenreUseCase = createGenreUseCase;
+        this.getGenreByIdUseCase = getGenreByIdUseCase;
+        this.updateGenreUseCase = updateGenreUseCase;
     }
+
 
     @Override
     public ResponseEntity<?> create(final CreateGenreRequest input) {
@@ -35,12 +47,14 @@ public class GenreController implements GenreAPI {
 
     @Override
     public GenreResponse getById(final String id) {
-        return null;
+        return GenreApiPresenter.present(this.getGenreByIdUseCase.execute(id));
     }
 
     @Override
     public ResponseEntity<?> updateById(final String id, final UpdateGenreRequest input) {
-        return null;
+        final var aCommand = UpdateGenreCommand.with(id,input.name(), input.isActive(), input.categories());
+        final var output = this.updateGenreUseCase.execute(aCommand);
+        return ResponseEntity.ok(output);
     }
 
     @Override
