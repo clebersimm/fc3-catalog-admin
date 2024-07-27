@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fullcycle.admin.catalog.ControllerTest;
 import com.fullcycle.admin.catalog.application.genre.create.CreateGenreOutput;
 import com.fullcycle.admin.catalog.application.genre.create.CreateGenreUseCase;
+import com.fullcycle.admin.catalog.application.genre.delete.DeleteGenreUseCase;
 import com.fullcycle.admin.catalog.application.genre.retrive.get.GenreOutput;
 import com.fullcycle.admin.catalog.application.genre.retrive.get.GetGenreByIdUseCase;
 import com.fullcycle.admin.catalog.application.genre.update.UpdateGenreOutput;
@@ -36,6 +37,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.web.servlet.function.RequestPredicates.headers;
@@ -57,6 +60,9 @@ public class GenreAPITest {
 
     @MockBean
     private UpdateGenreUseCase updateGenreUseCase;
+
+    @MockBean
+    private DeleteGenreUseCase deleteGenreUseCase;
 
     @Test
     public void givenAValidCommand_whenCallsCreateGenre_shouldReturnGenreId() throws Exception {
@@ -133,7 +139,7 @@ public class GenreAPITest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.created_at",Matchers.equalTo(aGenre.getCreatedAt().toString())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.updated_at",Matchers.equalTo(aGenre.getUpdatedAt().toString())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.deleted_at",Matchers.equalTo(aGenre.getDeletedAt().toString())));
-        verify(getGenreByIdUseCase).execute(ArgumentMatchers.eq(expectedId));
+        verify(getGenreByIdUseCase).execute(eq(expectedId));
     }
 
     @Test
@@ -150,7 +156,7 @@ public class GenreAPITest {
         response.andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.header().string("Content-Type",MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message",Matchers.equalTo(expectedErrorMessage)));
-        verify(getGenreByIdUseCase).execute(ArgumentMatchers.eq(expectedId.getValue()));
+        verify(getGenreByIdUseCase).execute(eq(expectedId.getValue()));
     }
 
     @Test
@@ -211,4 +217,18 @@ public class GenreAPITest {
                         && Objects.equals(expectedCategories, cmd.categories())
         ));
     }
+
+    @Test
+    public void givenAValidId_whenCallsDeleteGenre_shouldReturnBeOK() throws Exception {
+        // given
+        final var expectedId = "123";
+        doNothing().when(deleteGenreUseCase).execute(any());
+        // when
+        final var aRequest = MockMvcRequestBuilders.delete("/genres/{id}",expectedId).accept(MediaType.APPLICATION_JSON);
+        final var result = this.mvc.perform(aRequest);
+        // then
+        result.andExpect(status().isNoContent());
+        verify(deleteGenreUseCase).execute(eq(expectedId));
+    }
+
 }
