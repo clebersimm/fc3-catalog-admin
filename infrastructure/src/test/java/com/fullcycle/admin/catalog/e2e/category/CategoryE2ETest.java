@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalog.e2e.category;
 
+import com.fullcycle.admin.catalog.e2e.MockDsl;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +26,7 @@ import com.fullcycle.admin.catalog.infrastructure.configuration.json.Json;
 
 @E2ETest
 @Testcontainers
-public class CategoryE2ETest {
+public class CategoryE2ETest implements MockDsl {
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -39,6 +40,11 @@ public class CategoryE2ETest {
     @DynamicPropertySource
     public static void setDataSourceProperties(final DynamicPropertyRegistry registry) {
         registry.add("mysql.port", () -> MY_SQL_CONTAINER.getMappedPort(3306));
+    }
+
+    @Override
+    public MockMvc mvc() {
+        return this.mvc;
     }
 
     @Test
@@ -157,19 +163,6 @@ public class CategoryE2ETest {
                 .andReturn()
                 .getResponse().getContentAsString();
         return Json.readValue(json, CategoryApiOutput.class);
-    }
-
-    private CategoryID givenACategory(final String expectedName, final String expectedDescription,
-            final boolean expectedIsActive) throws Exception {
-        final var request = new CreateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
-        final var aRequest = MockMvcRequestBuilders.post("/categories").contentType(MediaType.APPLICATION_JSON)
-                .content(Json.writeValueAsString(request));
-        final var actualId = this.mvc.perform(aRequest)
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andReturn()
-                .getResponse().getHeader("Location")
-                .replace("/categories/", "");
-        return CategoryID.from(actualId);
     }
 
     @Test
