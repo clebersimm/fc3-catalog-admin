@@ -4,7 +4,6 @@ import com.fullcycle.admin.catalog.E2ETest;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import com.fullcycle.admin.catalog.e2e.MockDsl;
-import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fullcycle.admin.catalog.infrastructure.genre.models.UpdateGenreRequest;
 import com.fullcycle.admin.catalog.infrastructure.genre.persistence.GenreRepository;
 import org.hamcrest.Matchers;
