@@ -1,12 +1,13 @@
 package com.fullcycle.admin.catalog.e2e.category;
 
 import com.fullcycle.admin.catalog.E2ETest;
+import com.fullcycle.admin.catalog.domain.genre.GenreID;
 import com.fullcycle.admin.catalog.e2e.MockDsl;
 import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import org.hamcrest.Matchers;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -229,6 +230,14 @@ public class CategoryE2ETest implements MockDsl {
         Assertions.assertFalse(this.categoryRepository.existsById(actualId.getValue()));
         //final var actualCategory = retrieveACategory(actualId.getValue());
         
+    }
+
+    @Test
+    public void asACatalogAdminIShouldNotSeeAnErrorByDeletingANonExistingCategory() throws Exception {
+        Assertions.assertTrue(MY_SQL_CONTAINER.isRunning());
+        Assertions.assertEquals(0, categoryRepository.count());
+        deleteAGenre(GenreID.from("123")).andExpect(MockMvcResultMatchers.status().isNoContent());
+        Assertions.assertEquals(0, categoryRepository.count());
     }
 
 }

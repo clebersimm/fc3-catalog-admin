@@ -8,6 +8,8 @@ import com.fullcycle.admin.catalog.infrastructure.category.models.CreateCategory
 import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fullcycle.admin.catalog.infrastructure.configuration.json.Json;
 import com.fullcycle.admin.catalog.infrastructure.genre.models.CreateGenreRequest;
+import com.fullcycle.admin.catalog.infrastructure.genre.models.GenreResponse;
+import com.fullcycle.admin.catalog.infrastructure.genre.models.UpdateGenreRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -56,6 +58,10 @@ public interface MockDsl {
 
     //----Genre
 
+    default ResultActions deleteAGenre(final Identifier anId ) throws Exception {
+        return this.delete("/genres/",anId);
+    }
+
     default GenreID givenAGenre(final String expectedName, final boolean expectedIsActive, final List<CategoryID> categories) throws Exception {
         final var request = new CreateGenreRequest(expectedName, mapTo(categories,CategoryID::getValue), expectedIsActive);
         final var actualId = this.given("/genres", request);
@@ -73,6 +79,14 @@ public interface MockDsl {
     default ResultActions listGenres(final int page, final int perPage, final String search, final String sort,
                                          final String directions) throws Exception {
         return this.list("/genres", page, perPage, search, sort, directions);
+    }
+
+    default GenreResponse retrieveAGenre(final Identifier anID) throws Exception {
+        return this.retrive("/genres/", anID, GenreResponse.class);
+    }
+
+    default ResultActions updateAGenre(final Identifier anID, final UpdateGenreRequest aUpdate) throws Exception {
+        return this.put("/genres/", anID, aUpdate);
     }
 
     //-----------------------------Helpers------------------------------------
