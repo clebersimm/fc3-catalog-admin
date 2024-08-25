@@ -22,7 +22,7 @@ public class CastMember extends AggregateRoot<CastMemberId> {
             final Instant anUpdateDate
     ){
         super(anId);
-        this.name = name;
+        this.name = aName;
         this.type = aType;
         this.createdAt = aCreationDate;
         this.updatedAt = anUpdateDate;
@@ -33,6 +33,30 @@ public class CastMember extends AggregateRoot<CastMemberId> {
         final var anId = CastMemberId.unique();
         final var now = InstantUtils.now();
         return new CastMember(anId, aName, aType, now, now);
+    }
+
+    public static CastMember with(
+            final CastMemberId anId,
+            final String aName,
+            final CastMemberType aType,
+            final Instant aCreationDate,
+            final Instant anUpdateDate
+    ) {
+        return new CastMember(anId, aName, aType, aCreationDate, anUpdateDate);
+    }
+
+    public static CastMember with(
+            final CastMember aCastMember
+    ) {
+        return new CastMember(aCastMember.id, aCastMember.name, aCastMember.type, aCastMember.createdAt, aCastMember.updatedAt);
+    }
+
+    public CastMember update(final String aName, final CastMemberType aType) {
+        this.name = aName;
+        this.type = aType;
+        this.updatedAt = InstantUtils.now();
+        selfValidate();
+        return this;
     }
 
     public String getName() {
@@ -53,7 +77,7 @@ public class CastMember extends AggregateRoot<CastMemberId> {
 
     @Override
     public void validate(ValidationHandler aHandler) {
-        new CastMamberValidator(this, aHandler).validate();
+        new CastMemberValidator(this, aHandler).validate();
     }
 
     private void selfValidate() {
@@ -63,4 +87,5 @@ public class CastMember extends AggregateRoot<CastMemberId> {
             throw new NotificationException("Failed to create a Aggregate CastMember", notification);
         }
     }
+
 }
