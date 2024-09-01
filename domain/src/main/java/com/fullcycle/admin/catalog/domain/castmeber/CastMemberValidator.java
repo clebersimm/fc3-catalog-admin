@@ -17,6 +17,7 @@ public class CastMemberValidator extends Validator {
     @Override
     public void validate() {
         checkNameConstraints();
+        checkTypeConstraints();
     }
 
     private void checkNameConstraints() {
