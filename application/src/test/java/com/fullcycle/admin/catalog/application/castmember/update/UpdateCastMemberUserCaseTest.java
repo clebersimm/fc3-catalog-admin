@@ -42,7 +42,7 @@ public class UpdateCastMemberUserCaseTest extends UseCaseTest {
         final var expectedName = Fixture.name();
         final var expectedType = CastMemberType.DIRECTOR;
         final var aCommand = UpdateCastMemberCommand.with(expectedId.getValue(), expectedName, expectedType);
-        when(castMemberGateway.findById(any())).thenReturn(Optional.of(aMember));
+        when(castMemberGateway.findById(any())).thenReturn(Optional.of(CastMember.with(aMember)));
         when(castMemberGateway.update(any())).thenAnswer(returnsFirstArg());
         // when
         final var actualOutput = useCase.execute(aCommand);
@@ -102,7 +102,7 @@ public class UpdateCastMemberUserCaseTest extends UseCaseTest {
     }
 
     @Test
-    public void givenAInvalidType_whenCallsUpdateCastMember_shouldThrowsNotificationException() {
+    public void givenAInvalidId_whenCallsUpdateCastMember_shouldThrowsNotificationException() {
         // given
         final var aMember = CastMember.newMember("vin disel",CastMemberType.ACTOR);
         final var expectedId = CastMemberId.from("11111");
