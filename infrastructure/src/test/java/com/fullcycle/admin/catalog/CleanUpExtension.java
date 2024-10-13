@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalog;
 import java.util.Collection;
 import java.util.List;
 
+import com.fullcycle.admin.catalog.infrastructure.castmember.persistence.CastMemberRepository;
 import com.fullcycle.admin.catalog.infrastructure.category.persistence.CategoryRepository;
 import com.fullcycle.admin.catalog.infrastructure.genre.persistence.GenreRepository;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -17,7 +18,8 @@ public class CleanUpExtension implements BeforeEachCallback {
 
         cleanUp(List.of(
                 appContext.getBean(GenreRepository.class),
-                appContext.getBean(CategoryRepository.class)
+                appContext.getBean(CategoryRepository.class),
+                appContext.getBean(CastMemberRepository.class)
         ));
     }
 
