@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 public class DeleteCastMemberUseCaseIT {
 
     @Autowired
-    private DefaultDeleteCastMemberUseCase useCase;
+    private DeleteCastMemberUseCase useCase;
 
     @Autowired
     private CastMemberRepository castMemberRepository;
