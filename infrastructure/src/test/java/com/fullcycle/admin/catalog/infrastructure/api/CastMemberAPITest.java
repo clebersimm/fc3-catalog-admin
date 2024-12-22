@@ -10,6 +10,7 @@ import com.fullcycle.admin.catalog.application.castmember.delete.DeleteCastMembe
 import com.fullcycle.admin.catalog.application.castmember.retrieve.get.CastMemberOutput;
 import com.fullcycle.admin.catalog.application.castmember.retrieve.get.GetCastMemberByIdUseCase;
 import com.fullcycle.admin.catalog.application.castmember.retrieve.list.ListCastMemberUseCase;
+import com.fullcycle.admin.catalog.application.castmember.update.UpdateCastMemberOutput;
 import com.fullcycle.admin.catalog.application.castmember.update.UpdateCastMemberUseCase;
 import com.fullcycle.admin.catalog.domain.castmeber.CastMember;
 import com.fullcycle.admin.catalog.domain.castmeber.CastMemberId;
@@ -18,6 +19,7 @@ import com.fullcycle.admin.catalog.domain.exceptions.NotificationException;
 import com.fullcycle.admin.catalog.domain.validation.Error;
 import com.fullcycle.admin.catalog.domain.validation.handler.Notification;
 import com.fullcycle.admin.catalog.infrastructure.castmember.models.CreateCastMemberRequest;
+import com.fullcycle.admin.catalog.infrastructure.castmember.models.UpdateCastMemberRequest;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -34,8 +37,7 @@ import java.util.Objects;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ControllerTest(controllers = CastMemberAPI.class)
@@ -143,6 +145,96 @@ public class CastMemberAPITest {
         response.andExpect(status().isNotFound()).andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.message",equalTo(expectedErrorMessage)));
         verify(getCastMemberByIdUseCase).execute(eq(expectedId.getValue()));
+    }
+
+    @Test
+    public void givenAValidCommand_whenCallsUpdateCastMember_shouldReturnItsIdentifier() throws Exception {
+        // given
+        final var expectedName = Fixture.name();
+        final var expectedType = Fixture.CastMember.type();
+        final var aMember = CastMember.newMember(expectedName, expectedType);
+        final var expectedId = aMember.getId();
+        final var aCommand = new UpdateCastMemberRequest(expectedName, expectedType);
+        when(updateCastMemberUseCase.execute(any())).thenReturn(UpdateCastMemberOutput.from(expectedId));
+        // when
+        final var aRequest = MockMvcRequestBuilders.put("/cast_members/{id}", expectedId.getValue()).contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(aCommand));
+        final var aResponse = this.mvc.perform(aRequest).andDo(MockMvcResultHandlers.print());
+        // then
+        aResponse.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.header().string("Content-type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.id", Matchers.equalTo(expectedId.getValue())));
+        verify(updateCastMemberUseCase).execute(argThat(cmd ->
+                Objects.equals(expectedId.getValue(), cmd.id()) &&
+                Objects.equals(expectedName, cmd.name()) &&
+                        Objects.equals(expectedType, cmd.type())
+        ));
+    }
+
+    @Test
+    public void givenAnInvalidName_whenCallsUpdateCastMember_shouldReturnNotification() throws Exception {
+        // given
+        final String expectedName = null;
+        final var expectedType = Fixture.CastMember.type();
+        final var expectedErrorMessage = "name should not be null";
+        final var aMember = CastMember.newMember(Fixture.name(), expectedType);
+        final var expectedId = aMember.getId();
+        final var aCommand = new UpdateCastMemberRequest(expectedName, expectedType);
+        when(updateCastMemberUseCase.execute(any())).thenThrow(NotificationException.with(new Error(expectedErrorMessage)));
+        // when
+        final var aRequest = MockMvcRequestBuilders.put("/cast_members/{id}", expectedId.getValue()).contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(aCommand));
+        final var aResponse = this.mvc.perform(aRequest).andDo(MockMvcResultHandlers.print());
+        // then
+        aResponse.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.header().string("Location", CoreMatchers.nullValue()))
+                .andExpect(MockMvcResultMatchers.header().string("Content-type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.errors", hasSize(1))).andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
+        verify(updateCastMemberUseCase).execute(argThat(cmd ->
+                Objects.equals(expectedId.getValue(), cmd.id()) &&
+                Objects.equals(expectedName, cmd.name()) &&
+                        Objects.equals(expectedType, cmd.type())
+        ));
+    }
+
+    @Test
+    public void givenAnInvalidName_whenCallsUpdateCastMember_shouldReturnNotFound() throws Exception {
+        // given
+        final var expectedId = CastMemberId.from("123");
+        final var expectedName = Fixture.name();
+        final var expectedType = Fixture.CastMember.type();
+        final var expectedErrorMessage = "CastMember with ID 123 was not found";
+        final var aCommand = new UpdateCastMemberRequest(expectedName, expectedType);
+        when(updateCastMemberUseCase.execute(any())).thenThrow(NotFoundException.with(CastMember.class, expectedId));
+        // when
+        final var aRequest = MockMvcRequestBuilders.put("/cast_members/{id}", expectedId.getValue()).contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(aCommand));
+        final var aResponse = this.mvc.perform(aRequest).andDo(MockMvcResultHandlers.print());
+        // then
+        aResponse.andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.header().string("Location", CoreMatchers.nullValue()))
+                .andExpect(MockMvcResultMatchers.header().string("Content-type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+        verify(updateCastMemberUseCase).execute(argThat(cmd ->
+                Objects.equals(expectedId.getValue(), cmd.id()) &&
+                        Objects.equals(expectedName, cmd.name()) &&
+                        Objects.equals(expectedType, cmd.type())
+        ));
+    }
+
+    @Test
+    public void givenAValidId_whenCallsDeleteById_shouldDeleteIt() throws Exception {
+        // given
+        final var expectedId = "123";
+
+        doNothing().when(deleteCastMemberUseCase).execute(any());
+        // when
+        final var aRequest = MockMvcRequestBuilders.delete("/cast_members/{id}",expectedId).accept(MediaType.APPLICATION_JSON);
+        final var response =  this.mvc.perform(aRequest);
+        // then
+        response.andExpect(status().isNoContent());
+        verify(deleteCastMemberUseCase).execute(eq(expectedId));
+
     }
 
 }
