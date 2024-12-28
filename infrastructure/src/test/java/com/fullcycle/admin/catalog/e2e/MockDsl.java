@@ -1,8 +1,10 @@
 package com.fullcycle.admin.catalog.e2e;
 
 import com.fullcycle.admin.catalog.domain.Identifier;
+import com.fullcycle.admin.catalog.domain.castmeber.CastMemberType;
 import com.fullcycle.admin.catalog.domain.category.CategoryID;
 import com.fullcycle.admin.catalog.domain.genre.GenreID;
+import com.fullcycle.admin.catalog.infrastructure.castmember.models.CreateCastMemberRequest;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CategoryApiOutput;
 import com.fullcycle.admin.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import com.fullcycle.admin.catalog.infrastructure.category.models.UpdateCategoryApiInput;
@@ -21,6 +23,14 @@ import java.util.function.Function;
 
 public interface MockDsl {
     MockMvc mvc();
+
+    //----CastMember
+
+    default CategoryID givenACastMember(final String aName, final CastMemberType aType) throws Exception {
+        final var request = new CreateCastMemberRequest(aName, aType);
+        final var actualId = this.given("/cast_member", request);
+        return CategoryID.from(actualId);
+    }
 
     //----Category
 
